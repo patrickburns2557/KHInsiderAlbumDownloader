@@ -15,7 +15,7 @@ args = parser.parse_args()
 
 album_urls.append(args.album[0])
 
-print(album_urls[0])
+#print(album_urls[0])
 
 #album_url = "https://downloads.khinsider.com/game-soundtracks/album/drifting-lands-original-soundtrack"
 #download_url = "https://downloads.khinsider.com/game-soundtracks/album/pokemon-legends-arceus-complete-soundtrack/1-26%2520-%2520Suspense.mp3"
@@ -34,7 +34,11 @@ def get_flac_link(page_url):
     
     #filter links ending w/ .flac
     #and grab what should be the only link ending in flac
-    flac_link = [link['href'] for link in links if link['href'].endswith('flac')][0]
+    try:
+        flac_link = [link['href'] for link in links if link['href'].endswith('flac')][0]
+    #If FLAC download not found for an album, fallback to MP3 download instead
+    except:
+        flac_link = [link['href'] for link in links if link['href'].endswith('mp3')][0]
     
     #return link to flac file
     return flac_link
@@ -72,11 +76,15 @@ def get_download_urls(album_url):
 
 
 def download_flacs(flac_links):
+    #Let user know of MP3 fallback was used
+    if flac_links[0].endswith("mp3"):
+        print("\nFLAC download not found, downloading MP3 instead.\n")
+    
     #grab name from the link
     for link in flac_links:
         #use unquote to decode the html characters from the link back into ascii characters
         file_name = unquote(link.split('/')[-1])
-        print(  "Downloading file:%s "%file_name)
+        print("  Downloading file:%s "%file_name)
         
         #response object
         #turn on stream mode to load file in chunks
@@ -90,7 +98,7 @@ def download_flacs(flac_links):
                 if chunk:
                     file.write(chunk)
         
-        print(  "%s downloaded.\n"%file_name)
+        print("  %s downloaded.\n"%file_name)
     
     print("All songs downloaded.")
     return
