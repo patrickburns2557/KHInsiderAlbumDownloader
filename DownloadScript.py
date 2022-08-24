@@ -7,6 +7,7 @@ from urllib.parse import unquote
 from bs4 import BeautifulSoup
 
 album_urls = []
+current_album = ''
 
 parser = argparse.ArgumentParser(description='KHInsider Album Downloader')
 parser.add_argument('-a', '--album', action='store', nargs = '+', type=str)
@@ -59,6 +60,7 @@ def get_flac_link(page_url):
 
 
 def get_download_urls(album_url):
+    global current_album
     #response object
     r = requests.get(album_url)
     
@@ -68,6 +70,13 @@ def get_download_urls(album_url):
     #find all links on page
     #links = soup.find_all(string=re.compile("get_app"))
     links = soup.findAll('a')
+    
+    #Grab and save name of current album to create a subfolder for it when downloading starts
+    current_album = soup.find('h2').string
+    
+    
+    
+    print("\n\nDownloading album: " + current_album)
     
     #filter links to contain only links from
     #tags that had "get_app" in it
@@ -94,10 +103,16 @@ def download_flacs(flac_links):
     if flac_links[0].endswith("mp3"):
         print("\nFLAC download not found, downloading MP3 instead.\n")
     
+    #put each album into its own subfolder
+    os.mkdir(current_album)
+    
+    
     #grab name from the link
     for link in flac_links:
         #use unquote to decode the html characters from the link back into ascii characters
         file_name = unquote(link.split('/')[-1])
+        
+        #file_directory = unquote(link.split('/')[-1]) + current_album
         print("  Downloading file:%s "%file_name)
         
         #response object
@@ -107,7 +122,7 @@ def download_flacs(flac_links):
         r = requests.get(link, stream = True)
         
         #iterate through chunks
-        with open(file_name, 'wb') as file:
+        with open((current_album + "/" + file_name), 'wb') as file:
             for chunk in r.iter_content(chunk_size=1024):
                 if chunk:
                     file.write(chunk)
@@ -118,7 +133,7 @@ def download_flacs(flac_links):
     return
 
 
-
+print("Downloading " + str(len(album_urls)) + " albums...")
 for album_url in album_urls:
     links = get_download_urls(album_url)
     flac_links = []
