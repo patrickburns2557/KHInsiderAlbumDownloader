@@ -3,18 +3,23 @@ import requests
 import argparse
 import os
 import sys
+import re
 from urllib.parse import unquote
 from bs4 import BeautifulSoup
 
 album_urls = []
 current_album = ''
 total_downloads = 0
+multiple_discs = False
+want_multiple_discs = False
 
 parser = argparse.ArgumentParser(description='KHInsider Album Downloader')
 parser.add_argument('-a', '--album', action='store', nargs = '+', type=str)
 parser.add_argument('-f', '--file', action='store', nargs = '+', type=str, help="input file with album links on each line")
+parser.add_argument('-d', '--discs', action='store_true', help="Add if you want the program to download albums with multiple discs into separate disc folders")
 
 args = parser.parse_args()
+
 
 #print out help message if no arguments given
 if not len(sys.argv)>1:
@@ -31,6 +36,9 @@ if args.file is not None:
         lines = file.readlines()
     for line in lines:
         album_urls.append(line.rstrip())
+
+#Check if user wants to separate album with multiple discs into separate disc folders
+want_multiple_discs = args.discs
 
 
 #for a in album_urls:
@@ -62,11 +70,23 @@ def get_flac_link(page_url):
 
 def get_download_urls(album_url):
     global current_album
+    global multiple_discs
     #response object
     r = requests.get(album_url)
     
     #create soup object
     soup = BeautifulSoup(r.content, 'html5lib')
+    
+    #TEST IF AN ALBUM CONTAINS MULTIPLE DISCS
+    multiple_discs = False
+    #Find all <b></b> strings on page
+    bList = soup.findAll('b')
+    #test if "CD" is in this list
+    for b in bList:
+        if "CD" in str(b):
+            multiple_discs = True
+    print("Multiple discs: " + str(multiple_discs))
+    print("Want multiple discs: " + str(want_multiple_discs))
     
     #find all links on page
     #links = soup.find_all(string=re.compile("get_app"))
@@ -102,6 +122,8 @@ def get_download_urls(album_url):
 
 def download_flacs(flac_links):
     global total_downloads
+    global multiple_discs
+    global want_multiple_discs
     #Let user know of MP3 fallback was used
     if flac_links[0].endswith("mp3"):
         print("\nFLAC download not found, downloading MP3 instead.\n")
@@ -125,8 +147,21 @@ def download_flacs(flac_links):
         #and some files (FLACS) may be too large to store in a string
         r = requests.get(link, stream = True)
         
+        #If there are multiple discs in the album, AND the user wants them separated, create disc subfolders for the album and download the files there
+        if multiple_discs and want_multiple_discs:
+            directory = (current_album + "/" + "Disc " + re.sub("[^0-9]", "", file_name[0:2])) #re.sub portion removes any non-numeric characters from the string
+            #check if the disc directory exists or not before creating it
+            if not os.path.exists(directory):
+                os.mkdir(directory)
+        #otherwise, just create a single directory for each album
+        else:
+            directory = (current_album)
+            if not os.path.exists(directory):
+                os.mkdir(directory)
+        
+        
         #iterate through chunks
-        with open((current_album + "/" + file_name), 'wb') as file:
+        with open((directory + "/" + file_name), 'wb') as file:
             for chunk in r.iter_content(chunk_size=1024):
                 if chunk:
                     file.write(chunk)
