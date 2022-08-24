@@ -29,7 +29,7 @@ Where the input file contains 1 album link per line
 ```
 Example: 
 ```
-python3 DownloadScript.py -a https://downloads.khinsider.com/game-soundtracks/album/mario-kart-8
+>python DownloadScript.py -a https://downloads.khinsider.com/game-soundtracks/album/mario-kart-8
 
-python3 DownloadScript.py -f input.txt
+>python DownloadScript.py -f input.txt
 ```
