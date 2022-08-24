@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 
 album_urls = []
 current_album = ''
+total_downloads = 0
 
 parser = argparse.ArgumentParser(description='KHInsider Album Downloader')
 parser.add_argument('-a', '--album', action='store', nargs = '+', type=str)
@@ -74,7 +75,7 @@ def get_download_urls(album_url):
     #Grab and save name of current album to create a subfolder for it when downloading starts
     current_album = soup.find('h2').string
     #replace any illegal filename characters with underscores
-    file_name = file_name.replace('\\', '_').replace('/', '_').replace(':', '_').replace('*', '_').replace('?', '_').replace('"', '_').replace('<', '_').replace('>', '_').replace('|', '_')
+    current_album = current_album.replace('\\', '_').replace('/', '_').replace(':', '_').replace('*', '_').replace('?', '_').replace('"', '_').replace('<', '_').replace('>', '_').replace('|', '_')
     
     
     print("\n\nDownloading album: " + current_album)
@@ -100,6 +101,7 @@ def get_download_urls(album_url):
 
 
 def download_flacs(flac_links):
+    global total_downloads
     #Let user know of MP3 fallback was used
     if flac_links[0].endswith("mp3"):
         print("\nFLAC download not found, downloading MP3 instead.\n")
@@ -130,6 +132,7 @@ def download_flacs(flac_links):
                     file.write(chunk)
         
         print("  %s downloaded.\n"%file_name)
+        total_downloads += 1
     
     print("All songs downloaded.")
     return
@@ -142,3 +145,5 @@ for album_url in album_urls:
     for link in links:
         flac_links.append(get_flac_link(link))
     download_flacs(flac_links)
+
+print("\n\n" + str(total_downloads) + " songs downloaded successfully.")
