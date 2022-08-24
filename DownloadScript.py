@@ -73,7 +73,8 @@ def get_download_urls(album_url):
     
     #Grab and save name of current album to create a subfolder for it when downloading starts
     current_album = soup.find('h2').string
-    
+    #replace any illegal filename characters with underscores
+    file_name = file_name.replace('\\', '_').replace('/', '_').replace(':', '_').replace('*', '_').replace('?', '_').replace('"', '_').replace('<', '_').replace('>', '_').replace('|', '_')
     
     
     print("\n\nDownloading album: " + current_album)
@@ -111,7 +112,8 @@ def download_flacs(flac_links):
     for link in flac_links:
         #use unquote to decode the html characters from the link back into ascii characters
         file_name = unquote(link.split('/')[-1])
-        
+        #replace any illegal filename characters with underscores
+        file_name = file_name.replace('\\', '_').replace('/', '_').replace(':', '_').replace('*', '_').replace('?', '_').replace('"', '_').replace('<', '_').replace('>', '_').replace('|', '_')
         #file_directory = unquote(link.split('/')[-1]) + current_album
         print("  Downloading file:%s "%file_name)
         
