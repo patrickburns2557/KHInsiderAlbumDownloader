@@ -85,8 +85,8 @@ def get_download_urls(album_url):
     for b in bList:
         if "CD" in str(b):
             multiple_discs = True
-    print("Multiple discs: " + str(multiple_discs))
-    print("Want multiple discs: " + str(want_multiple_discs))
+    #print("Multiple discs: " + str(multiple_discs))
+    #print("Want multiple discs: " + str(want_multiple_discs))
     
     #find all links on page
     #links = soup.find_all(string=re.compile("get_app"))
