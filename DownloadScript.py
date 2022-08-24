@@ -2,23 +2,37 @@
 import requests
 import argparse
 import os
+import sys
 from urllib.parse import unquote
 from bs4 import BeautifulSoup
 
 album_urls = []
 
-parser = argparse.ArgumentParser(description='Album Downloader')
+parser = argparse.ArgumentParser(description='KHInsider Album Downloader')
 parser.add_argument('-a', '--album', action='store', nargs = '+', type=str)
+parser.add_argument('-f', '--file', action='store', nargs = '+', type=str, help="input file with album links on each line")
 
 args = parser.parse_args()
 
+#print out help message if no arguments given
+if not len(sys.argv)>1:
+    parser.print_help(sys.stderr)
+    sys.exit(1)
 
-album_urls.append(args.album[0])
+#Add albums to album_urls list
+if args.album is not None:
+    album_urls.append(args.album[0])
+if args.file is not None:
+    #if an input file is given, read it line by line and add to the list
+    lines = []
+    with open(args.file[0]) as file:
+        lines = file.readlines()
+    for line in lines:
+        album_urls.append(line.rstrip())
 
-#print(album_urls[0])
 
-#album_url = "https://downloads.khinsider.com/game-soundtracks/album/drifting-lands-original-soundtrack"
-#download_url = "https://downloads.khinsider.com/game-soundtracks/album/pokemon-legends-arceus-complete-soundtrack/1-26%2520-%2520Suspense.mp3"
+#for a in album_urls:
+#    print(a)
 
 
 #grab the link to the flac file on the passed in page
