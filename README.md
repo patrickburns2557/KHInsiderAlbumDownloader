@@ -18,11 +18,18 @@ urllib3
 
 How to use:
 ```
-usage: DownloadScript.py -a ALBUM_LINK
+Single album at a time: DownloadScript.py -a ALBUM_LINK
 
 Where album link is the link to the main album page on KHInsider.
+
+
+Multiple albums from file: DownloadScript.py -f FILE_NAME.EXT
+
+Where the input file contains 1 album link per line
 ```
 Example: 
 ```
 python3 DownloadScript.py -a https://downloads.khinsider.com/game-soundtracks/album/mario-kart-8
+
+python3 DownloadScript.py -f input.txt
 ```
