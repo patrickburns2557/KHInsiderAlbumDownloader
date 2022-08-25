@@ -32,11 +32,13 @@ To have albums with multiple discs be seperated into disc subfolders,
 i.e. Disc 1, Disc 2, etc, add a -d argument to the script call.
 Any albums that don't have separate discs will be downloaded normally.
 ```
-Example: 
+Examples: 
 ```
 >python DownloadScript.py -a https://downloads.khinsider.com/game-soundtracks/album/mario-kart-8
 
 >python DownloadScript.py -f input.txt
 
 >python DownloadScript.py -d -a https://downloads.khinsider.com/game-soundtracks/album/pokemon-legends-arceus-complete-soundtrack
+
+>python DownloadScript.py -f input.txt -d
 ```
