@@ -26,10 +26,15 @@ Where album link is the link to the main album page on KHInsider.
 Multiple albums from file: DownloadScript.py -f FILE_NAME.EXT
 
 Where the input file contains 1 album link per line
+
+
+To have albums with multiple discs be seperated into disc subfolders, i.e. Disc 1, Disc 2, etc, add a -d argument to the script call.
 ```
 Example: 
 ```
 >python DownloadScript.py -a https://downloads.khinsider.com/game-soundtracks/album/mario-kart-8
 
 >python DownloadScript.py -f input.txt
+
+>python DownloadScript.py -d -a https://downloads.khinsider.com/game-soundtracks/album/pokemon-legends-arceus-complete-soundtrack
 ```
