@@ -36,9 +36,9 @@ Examples:
 ```
 >python DownloadScript.py -a https://downloads.khinsider.com/game-soundtracks/album/mario-kart-8
 
->python DownloadScript.py -f input.txt
-
 >python DownloadScript.py -d -a https://downloads.khinsider.com/game-soundtracks/album/pokemon-legends-arceus-complete-soundtrack
+
+>python DownloadScript.py -f input.txt
 
 >python DownloadScript.py -f input.txt -d
 ```
