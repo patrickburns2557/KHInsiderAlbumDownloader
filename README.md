@@ -28,7 +28,9 @@ Multiple albums from file: DownloadScript.py -f FILE_NAME.EXT
 Where the input file contains 1 album link per line
 
 
-To have albums with multiple discs be seperated into disc subfolders, i.e. Disc 1, Disc 2, etc, add a -d argument to the script call.
+To have albums with multiple discs be seperated into disc subfolders,
+i.e. Disc 1, Disc 2, etc, add a -d argument to the script call.
+Any albums that don't have separate discs will be downloaded normally.
 ```
 Example: 
 ```
