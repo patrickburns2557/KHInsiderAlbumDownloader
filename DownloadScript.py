@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 album_urls = []
 current_album = ''
 total_downloads = 0
+album_downloads = 0
 multiple_discs = False
 want_multiple_discs = False
 
@@ -99,6 +100,8 @@ def get_download_urls(album_url):
     
     
     print("\n\nDownloading album: " + current_album)
+    print("\nGathering links...\n")
+    
     
     #filter links to contain only links from
     #tags that had "get_app" in it
@@ -122,6 +125,7 @@ def get_download_urls(album_url):
 
 def download_flacs(flac_links):
     global total_downloads
+    global album_downloads
     global multiple_discs
     global want_multiple_discs
     #Let user know of MP3 fallback was used
@@ -131,7 +135,7 @@ def download_flacs(flac_links):
     #put each album into its own subfolder
     os.mkdir(current_album)
     
-    
+    album_downloads = 0
     #grab name from the link
     for link in flac_links:
         #use unquote to decode the html characters from the link back into ascii characters
@@ -168,8 +172,9 @@ def download_flacs(flac_links):
         
         print("  %s downloaded.\n"%file_name)
         total_downloads += 1
+        album_downloads += 1
     
-    print("All songs downloaded.")
+    print(str(album_downloads) + " songs downloaded in album.")
     return
 
 
