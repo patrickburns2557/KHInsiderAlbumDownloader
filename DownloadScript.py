@@ -180,10 +180,15 @@ def download_flacs(flac_links):
 
 print("Downloading " + str(len(album_urls)) + " albums...")
 for album_url in album_urls:
-    links = get_download_urls(album_url)
-    flac_links = []
-    for link in links:
-        flac_links.append(get_flac_link(link))
-    download_flacs(flac_links)
+    #Skip to next album if error encountered
+    try:
+        links = get_download_urls(album_url)
+        flac_links = []
+        for link in links:
+            flac_links.append(get_flac_link(link))
+        download_flacs(flac_links)
+    except:
+        print("Error encountered with current album. Skipping to next album.")
+        continue
 
 print("\n\n" + str(total_downloads) + " songs downloaded successfully.")
