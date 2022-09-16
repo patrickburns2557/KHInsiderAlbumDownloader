@@ -1,4 +1,3 @@
-#test downloading flac from url
 import requests
 import argparse
 import os
@@ -61,9 +60,19 @@ def get_flac_link(page_url):
     #and grab what should be the only link ending in flac
     try:
         flac_link = [link['href'] for link in links if link['href'].endswith('flac')][0]
-    #If FLAC download not found for an album, fallback to MP3 download instead
+    #If FLAC download not found for an album, check if other lossless formats exists
+    #if none found, fallback to MP3
     except:
-        flac_link = [link['href'] for link in links if link['href'].endswith('mp3')][0]
+        try:
+            flac_link = [link['href'] for link in links if link['href'].endswith('m4a')][0]
+        except:
+            try:
+                flac_link = [link['href'] for link in links if link['href'].endswith('wav')][0]
+            except:
+                try:
+                    flac_link = [link['href'] for link in links if link['href'].endswith('ogg')][0]
+                except:
+                    flac_link = [link['href'] for link in links if link['href'].endswith('mp3')][0]
     
     #return link to flac file
     return flac_link
@@ -128,9 +137,15 @@ def download_flacs(flac_links):
     global album_downloads
     global multiple_discs
     global want_multiple_discs
-    #Let user know of MP3 fallback was used
+    #Let user know if FLAC files weren't found and which was used instead
     if flac_links[0].endswith("mp3"):
         print("\nFLAC download not found, downloading MP3 instead.\n")
+    if flac_links[0].endswith("m4a"):
+        print("\nFLAC download not found, downloading M4A instead.\n")
+    if flac_links[0].endswith("ogg"):
+        print("\nFLAC download not found, downloading OGG instead.\n")
+    if flac_links[0].endswith("wav"):
+        print("\nFLAC download not found, downloading WAV instead.\n")
     
     #put each album into its own subfolder
     os.mkdir(current_album)
