@@ -6,6 +6,9 @@ import re
 from urllib.parse import unquote
 from bs4 import BeautifulSoup
 
+from tkinter import *
+from tkinter import ttk
+
 album_urls = []
 current_album = ''
 total_downloads = 0
@@ -137,9 +140,6 @@ def download_flacs(flac_links):
     global album_downloads
     global multiple_discs
     global want_multiple_discs
-    print("=================")
-    print(current_album)
-    print("=================")
     #Let user know if FLAC files weren't found and which was used instead
     if flac_links[0].endswith("mp3"):
         print("\nFLAC download not found, downloading MP3 instead.\n")
@@ -196,6 +196,10 @@ def download_flacs(flac_links):
     return
 
 
+root = Tk()
+frame = ttk.Frame(root, padding=10)
+frame.grid()
+
 print("Downloading " + str(len(album_urls)) + " albums...")
 for album_url in album_urls:
     #Skip to next album if error encountered
@@ -204,8 +208,16 @@ for album_url in album_urls:
         flac_links = []
         for link in links:
             flac_links.append(get_flac_link(link))
-        download_flacs(flac_links)
-    except:
+        ########################################################
+        print("Ready to download, click button to download")
+        ttk.Button(frame, text="DOWNLOAD", command=lambda: download_flacs(flac_links)).grid(column=0, row=0)
+        ttk.Button(frame, text="NEXT", command=root.quit).grid(column=0, row=1)
+        root.mainloop()
+        #download_flacs(flac_links)
+    except Exception as e:
+        print("==============")
+        print(e)
+        print("==============")
         print("Error encountered with current album. Skipping to next album.")
         continue
 
