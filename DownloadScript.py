@@ -137,9 +137,6 @@ def download_flacs(flac_links):
     global album_downloads
     global multiple_discs
     global want_multiple_discs
-    print("=================")
-    print(current_album)
-    print("=================")
     #Let user know if FLAC files weren't found and which was used instead
     if flac_links[0].endswith("mp3"):
         print("\nFLAC download not found, downloading MP3 instead.\n")
