@@ -196,29 +196,54 @@ def download_flacs(flac_links):
     return
 
 
+
+
+
+
+
+
+
+def startDownload():
+    print("Downloading " + str(len(album_urls)) + " albums...")
+    for album_url in album_urls:
+        #Skip to next album if error encountered
+        try:
+            links = get_download_urls(album_url)
+            flac_links = []
+            for link in links:
+                flac_links.append(get_flac_link(link))
+            
+            download_flacs(flac_links)
+        except Exception as e:
+            print("==============")
+            print(e)
+            print("==============")
+            print("Error encountered with current album. Skipping to next album.")
+            continue
+
+    print("\n\n" + str(total_downloads) + " songs downloaded successfully.")
+    total_downloads = 0
+
+
+
 root = Tk()
-frame = ttk.Frame(root, padding=10)
+userInput = StringVar()
+albumList = StringVar(value=album_urls)
+frame = ttk.Frame(root, padding=50)
 frame.grid()
 
-print("Downloading " + str(len(album_urls)) + " albums...")
-for album_url in album_urls:
-    #Skip to next album if error encountered
-    try:
-        links = get_download_urls(album_url)
-        flac_links = []
-        for link in links:
-            flac_links.append(get_flac_link(link))
-        ########################################################
-        print("Ready to download, click button to download")
-        ttk.Button(frame, text="DOWNLOAD", command=lambda: download_flacs(flac_links)).grid(column=0, row=0)
-        ttk.Button(frame, text="NEXT", command=root.quit).grid(column=0, row=1)
-        root.mainloop()
-        #download_flacs(flac_links)
-    except Exception as e:
-        print("==============")
-        print(e)
-        print("==============")
-        print("Error encountered with current album. Skipping to next album.")
-        continue
+########################################################
+print("Ready to download, click button to download")
+#ttk.Button(frame, text="DOWNLOAD", command=lambda: download_flacs(flac_links)).grid(column=0, row=0)
+list = Listbox(frame, listvariable=albumList, height=5, width=120)
+list.grid(column=1, row=1)
 
-print("\n\n" + str(total_downloads) + " songs downloaded successfully.")
+enterBox = ttk.Entry(frame, textvariable=userInput)
+enterBox.grid(column=0, row=0)
+ttk.Label(frame, text="To download:").grid(column=1, row=0)
+ttk.Button(frame, text="Add to list", command=lambda: [album_urls.append(userInput.get()),list.insert(END, userInput.get()), enterBox.delete(0, END), root.quit]).grid(column=0, row=1)
+ttk.Button(frame, text="Print list", command=lambda: print(album_urls)).grid(column=0, row=2)
+ttk.Button(frame, text="GO", command=lambda: startDownload()).grid(column=0, row=3)
+root.mainloop()
+
+########################################################
