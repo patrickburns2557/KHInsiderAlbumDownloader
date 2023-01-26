@@ -233,19 +233,22 @@ albumList = StringVar(value=album_urls)
 frame = ttk.Frame(root, padding=50)
 frame.grid()
 
+buttonFrame = ttk.Frame(frame, padding=10)
+buttonFrame.grid(column=0, row=0)
+listFrame = ttk.Frame(frame, padding=10)
+listFrame.grid(column=1, row=0)
 ########################################################
-#ttk.Button(frame, text="DOWNLOAD", command=lambda: download_flacs(flac_links)).grid(column=0, row=0)
-list = Listbox(frame, listvariable=albumList, height=5, width=120)
-list.grid(column=1, row=1)
+list = Listbox(listFrame, listvariable=albumList, height=8, width=120)
+list.grid(column=0, row=1)
 
-enterBox = ttk.Entry(frame, textvariable=userInput)
+enterBox = ttk.Entry(buttonFrame, textvariable=userInput)
 enterBox.grid(column=0, row=0)
-ttk.Label(frame, text="To download:").grid(column=1, row=0)
-ttk.Button(frame, text="Add to list", command=lambda: [album_urls.append(userInput.get()),list.insert(END, userInput.get()), enterBox.delete(0, END), root.quit]).grid(column=0, row=1)
-ttk.Button(frame, text="Print list", command=lambda: print(album_urls)).grid(column=0, row=2)
-ttk.Button(frame, text="Clear list", command=lambda: [album_urls.clear(), list.delete(0, END), root.quit]).grid(column=0, row=3)
-ttk.Button(frame, text="START", command=lambda: threading.Thread(target=startDownload).start()).grid(column=0, row=4)
-ttk.Button(frame, text="QUIT", command=root.destroy).grid(column=0, row=5)
+ttk.Label(listFrame, text="To download:").grid(column=0, row=0)
+ttk.Button(buttonFrame, text="Add to list", command=lambda: [album_urls.append(userInput.get()),list.insert(END, userInput.get()), enterBox.delete(0, END), root.quit]).grid(column=0, row=1)
+ttk.Button(buttonFrame, text="Print list", command=lambda: print(album_urls)).grid(column=0, row=2)
+ttk.Button(buttonFrame, text="Clear list", command=lambda: [album_urls.clear(), list.delete(0, END), root.quit]).grid(column=0, row=3)
+ttk.Button(buttonFrame, text="START", command=lambda: threading.Thread(target=startDownload).start()).grid(column=0, row=4)#Create a separate thread for the downloading so it doesn't cause the GUI window to hang during the download
+ttk.Button(buttonFrame, text="QUIT", command=root.destroy).grid(column=0, row=5)
 root.mainloop()
 
 ########################################################
