@@ -1,5 +1,4 @@
 import requests
-import argparse
 import os
 import sys
 import re
@@ -13,17 +12,12 @@ album_urls = []
 current_album = ''
 total_downloads = 0
 album_downloads = 0
+session_downloads = 0
 multiple_discs = False
 want_multiple_discs = False
 
-parser = argparse.ArgumentParser(description='KHInsider Album Downloader')
-parser.add_argument('-a', '--album', action='store', nargs = '+', type=str)
-parser.add_argument('-f', '--file', action='store', nargs = '+', type=str, help="input file with album links on each line")
-parser.add_argument('-d', '--discs', action='store_true', help="Add if you want the program to download albums with multiple discs into separate disc folders")
 
-args = parser.parse_args()
-
-
+'''
 #print out help message if no arguments given
 if not len(sys.argv)>1:
     parser.print_help(sys.stderr)
@@ -39,10 +33,11 @@ if args.file is not None:
         lines = file.readlines()
     for line in lines:
         album_urls.append(line.rstrip())
+        
 
 #Check if user wants to separate album with multiple discs into separate disc folders
 want_multiple_discs = args.discs
-
+'''
 
 #for a in album_urls:
 #    print(a)
@@ -137,6 +132,7 @@ def get_download_urls(album_url):
 
 def download_flacs(flac_links):
     global total_downloads
+    global session_downloads
     global album_downloads
     global multiple_discs
     global want_multiple_discs
@@ -190,6 +186,7 @@ def download_flacs(flac_links):
         
         print("  %s downloaded.\n"%file_name)
         total_downloads += 1
+        session_downloads += 1
         album_downloads += 1
     
     print(str(album_downloads) + " songs downloaded in album.")
@@ -204,6 +201,8 @@ def download_flacs(flac_links):
 
 
 def startDownload():
+    global total_downloads
+    global album_urls
     print("Downloading " + str(len(album_urls)) + " albums...")
     for album_url in album_urls:
         #Skip to next album if error encountered
@@ -222,6 +221,7 @@ def startDownload():
             continue
 
     print("\n\n" + str(total_downloads) + " songs downloaded successfully.")
+    print("\n\n" + str(session_downloads) + " total songs downloaded this session.")
     total_downloads = 0
 
 
@@ -233,7 +233,6 @@ frame = ttk.Frame(root, padding=50)
 frame.grid()
 
 ########################################################
-print("Ready to download, click button to download")
 #ttk.Button(frame, text="DOWNLOAD", command=lambda: download_flacs(flac_links)).grid(column=0, row=0)
 list = Listbox(frame, listvariable=albumList, height=5, width=120)
 list.grid(column=1, row=1)
@@ -243,7 +242,9 @@ enterBox.grid(column=0, row=0)
 ttk.Label(frame, text="To download:").grid(column=1, row=0)
 ttk.Button(frame, text="Add to list", command=lambda: [album_urls.append(userInput.get()),list.insert(END, userInput.get()), enterBox.delete(0, END), root.quit]).grid(column=0, row=1)
 ttk.Button(frame, text="Print list", command=lambda: print(album_urls)).grid(column=0, row=2)
-ttk.Button(frame, text="GO", command=lambda: startDownload()).grid(column=0, row=3)
+ttk.Button(frame, text="Clear list", command=lambda: [album_urls.clear(), list.delete(0, END), root.quit]).grid(column=0, row=3)
+ttk.Button(frame, text="START", command=lambda: startDownload()).grid(column=0, row=4)
+ttk.Button(frame, text="QUIT", command=root.destroy).grid(column=0, row=5)
 root.mainloop()
 
 ########################################################
