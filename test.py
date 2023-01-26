@@ -2,6 +2,7 @@ import requests
 import os
 import sys
 import re
+import threading
 from urllib.parse import unquote
 from bs4 import BeautifulSoup
 
@@ -243,7 +244,7 @@ ttk.Label(frame, text="To download:").grid(column=1, row=0)
 ttk.Button(frame, text="Add to list", command=lambda: [album_urls.append(userInput.get()),list.insert(END, userInput.get()), enterBox.delete(0, END), root.quit]).grid(column=0, row=1)
 ttk.Button(frame, text="Print list", command=lambda: print(album_urls)).grid(column=0, row=2)
 ttk.Button(frame, text="Clear list", command=lambda: [album_urls.clear(), list.delete(0, END), root.quit]).grid(column=0, row=3)
-ttk.Button(frame, text="START", command=lambda: startDownload()).grid(column=0, row=4)
+ttk.Button(frame, text="START", command=lambda: threading.Thread(target=startDownload).start()).grid(column=0, row=4)
 ttk.Button(frame, text="QUIT", command=root.destroy).grid(column=0, row=5)
 root.mainloop()
 
