@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 
 from tkinter import *
 from tkinter import ttk
+import customtkinter as ctk
 
 album_urls = []
 current_album = ''
@@ -226,7 +227,7 @@ def startDownload():
     total_downloads = 0
 
 
-
+'''
 root = Tk()
 userInput = StringVar()
 albumList = StringVar(value=album_urls)
@@ -251,4 +252,48 @@ ttk.Button(buttonFrame, text="START", command=lambda: threading.Thread(target=st
 ttk.Button(buttonFrame, text="QUIT", command=root.destroy).grid(column=0, row=5)
 root.mainloop()
 
+
+
+
 ########################################################
+
+'''
+
+root = ctk.CTk()
+userInput = ctk.StringVar()
+albumList = ctk.StringVar(value=album_urls)
+frame = ctk.CTkFrame(root)
+frame.grid(padx=50, pady=50)
+
+buttonFrame = ctk.CTkFrame(frame)
+buttonFrame.grid(column=0, row=0, padx=10, pady=10)
+listFrame = ctk.CTkFrame(frame)
+listFrame.grid(column=1, row=0, padx=10, pady=10)
+########################################################
+#list = Listbox(listFrame, listvariable=albumList, height=8, width=120)
+#list.grid(column=0, row=1)
+scrollableList = ctk.CTkScrollableFrame(listFrame, width=800, height=200)
+scrollableList.grid(column=0, row=1)
+
+
+enterBox = ctk.CTkEntry(buttonFrame, textvariable=userInput)
+enterBox.grid(column=0, row=0)
+ctk.CTkLabel(listFrame, text="To download:").grid(column=0, row=0)
+#ctk.CTkButton(buttonFrame, text="Add to list", command=lambda: [album_urls.append(userInput.get()),list.insert(END, userInput.get()), enterBox.delete(0, END), root.quit]).grid(column=0, row=1, padx=5, pady=5)
+ctk.CTkButton(buttonFrame, text="Add to list", command=lambda: [album_urls.append(userInput.get()), ctk.CTkLabel(scrollableList, text=userInput.get(), justify="left", anchor="w").pack(fill="both"), enterBox.delete(0, END), root.quit]).grid(column=0, row=1, padx=5, pady=5)
+ctk.CTkButton(buttonFrame, text="Print list", command=lambda: print(album_urls)).grid(column=0, row=2, padx=5, pady=5)
+#ttk.Button(buttonFrame, text="Clear list", command=lambda: [album_urls.clear(), list.delete(0, END), root.quit]).grid(column=0, row=3)
+ctk.CTkButton(buttonFrame, text="Clear list", command=lambda: [album_urls.clear(), clearList(scrollableList), root.quit]).grid(column=0, row=3, padx=5, pady=5)
+ctk.CTkButton(buttonFrame, text="START", command=lambda: threading.Thread(target=startDownload).start()).grid(column=0, row=4, padx=5, pady=5)#Create a separate thread for the downloading so it doesn't cause the GUI window to hang during the download
+ctk.CTkButton(buttonFrame, text="QUIT", command=root.destroy).grid(column=0, row=5, padx=5, pady=5)
+
+
+
+def clearList(frame):
+    for widget in frame.winfo_children():
+        widget.destroy()
+
+#for i in range(1,20):
+#    ctk.CTkLabel(scrollable, text = ("example text to test the scrollable frame in customtkinter number: " + str(i)), justify="left", anchor="w", font=("Roboto", 16)).pack(fill="both")
+root.mainloop()
+
